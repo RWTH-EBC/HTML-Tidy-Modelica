@@ -83,6 +83,7 @@ def _CheckFile(moFile):
              section.
     """
     # Open file.
+    print(moFile)
     with io.open(moFile, mode="r", encoding="utf-8-sig") as f:
         lines = f.readlines()
     nLin = len(lines)
@@ -93,6 +94,7 @@ def _CheckFile(moFile):
     for i in range(nLin):
         if isTagClosed:
             # search for opening tag
+            lines[i] = correct_img_atr(lines[i])
             idxO = lines[i].find("<html>")
             if idxO > -1:
                 # if found opening tag insert everything up to opening tag into the code list
@@ -122,6 +124,7 @@ def _CheckFile(moFile):
                 code.append(lines[i])
                 isTagClosed = True
         else:
+            lines[i] = correct_img_atr(lines[i])
             # check for both, correct and incorrect html tags, because dymola except also <\html>
             idxC1 = lines[i].find("</html>")
             idxC2 = lines[i].find("<\html>")
@@ -153,16 +156,26 @@ def _CheckFile(moFile):
             errors_string +=lines
     return document_corr, errors_string
 
+def correct_img_atr(line):
+    #check for missing alt attributed
+    if line.encode("utf-8").find("img")> -1:
+        imgCloseTagIndex = line.find(">")
+        if imgCloseTagIndex > -1:
+            #todo when more then one ">" in line all are changed -> change only the one after imgCloseTagIndex
+            line = line.replace(">", ' alt="" >')
+    return line
 
 def _htmlCorrection(htmlCode):
     from tidylib import tidy_document
+
     body = ""
     for line in htmlCode:
         body += line + '\n'
     body = body.replace('\\"', '"')
     # Validate the string
     htmlCorrect, errors = tidy_document(r"%s" % body, options={'doctype': 'omit', 'show-body-only': 1,
-                                                               'numeric-entities': 1, 'replace-color': 1})
+                                                               'numeric-entities': 1,
+                                                               'output-html': 1,  'wrap': 72})
     replacements = {
         '"': '\\"',
         '<br>': '<br/>',

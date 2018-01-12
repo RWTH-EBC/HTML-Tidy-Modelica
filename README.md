@@ -4,16 +4,14 @@ This script converts HTML Code in Modelica to get a HTML and Dymola conform code
 ### How to use the script:
 
  1. Install tidylib for python with
-	
-	a. pip install pytidylib
+	- pip install pytidylib
 
 2. Install library
-	
-	a. Get binary from: http://binaries.html-tidy.org/
+	- Get binary from: http://binaries.html-tidy.org/
 	
 		!Take correct version (64bit 32bit)!
 
-	c. Pack .dll and .exe data to PATH environment variable in windows
+	- Pack .dll and .exe data to PATH environment variable in windows
 
 3. copy html_tidy.py into the modelica directory in which you want to correct your modelica files
 	

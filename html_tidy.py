@@ -94,7 +94,7 @@ def _CheckFile(moFile):
     for i in range(nLin):
         if isTagClosed:
             # search for opening tag
-            lines[i] = correct_img_atr(lines[i])
+            #lines[i] = correct_img_atr(lines[i])
             idxO = lines[i].find("<html>")
             if idxO > -1:
                 # if found opening tag insert everything up to opening tag into the code list
@@ -124,7 +124,7 @@ def _CheckFile(moFile):
                 code.append(lines[i])
                 isTagClosed = True
         else:
-            lines[i] = correct_img_atr(lines[i])
+            #lines[i] = correct_img_atr(lines[i])
             # check for both, correct and incorrect html tags, because dymola except also <\html>
             idxC1 = lines[i].find("</html>")
             idxC2 = lines[i].find("<\html>")
@@ -141,7 +141,12 @@ def _CheckFile(moFile):
                 code.append(lines[i][idxC:])
                 # clear htmlcode list
                 htmlCode = list()
-                isTagClosed = True
+                # check if there is a new opening tag on the same line
+                idxO = lines[i].find("<html>")
+                if idxO > -1:
+                    isTagClosed=False
+                else:
+                    isTagClosed = True
             else:
                 htmlCode.append(lines[i])
                 isTagClosed = False
@@ -154,15 +159,22 @@ def _CheckFile(moFile):
     if len(errors) > 0:
         for lines in errors:
             errors_string +=lines
-    return document_corr, errors_string
+
+    # correct img attribute and closing tag
+    document_corr_img =""
+    for line in document_corr.splitlines():
+        line = correct_img_atr(line)
+        document_corr_img += line + '\n'
+    return document_corr_img, errors_string
 
 def correct_img_atr(line):
     #check for missing alt attributed
-    if line.encode("utf-8").find("img")> -1:
-        imgCloseTagIndex = line.find(">")
-        if imgCloseTagIndex > -1:
-            #todo when more then one ">" in line all are changed -> change only the one after imgCloseTagIndex
-            line = line.replace(">", ' alt="" >')
+    imgTag = line.encode("utf-8").find("img")
+    if imgTag> -1:
+        imgCloseTagIndex = line.find(">", imgTag)
+        imgAltIndex = line.find("alt", imgTag)
+        if imgCloseTagIndex > -1 and imgAltIndex == -1:
+            line = line[:imgTag] + line[imgTag:].replace(">", ' alt="" />',1)
     return line
 
 def _htmlCorrection(htmlCode):
@@ -172,14 +184,17 @@ def _htmlCorrection(htmlCode):
     for line in htmlCode:
         body += line + '\n'
     body = body.replace('\\"', '"')
+
+
     # Validate the string
     htmlCorrect, errors = tidy_document(r"%s" % body, options={'doctype': 'omit', 'show-body-only': 1,
                                                                'numeric-entities': 1,
-                                                               'output-html': 1,  'wrap': 72})
+                                                               'output-html': 1,  'wrap': 72, 'alt-text': '',})
     replacements = {
         '"': '\\"',
         '<br>': '<br/>',
     }
+
     document_corr = htmlCorrect
     for old, new in replacements.iteritems():
         document_corr = document_corr.replace(old, new)

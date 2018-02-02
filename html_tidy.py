@@ -94,7 +94,6 @@ def _CheckFile(moFile):
     for i in range(nLin):
         if isTagClosed:
             # search for opening tag
-            #lines[i] = correct_img_atr(lines[i])
             idxO = lines[i].find("<html>")
             if idxO > -1:
                 # if found opening tag insert everything up to opening tag into the code list
@@ -124,7 +123,6 @@ def _CheckFile(moFile):
                 code.append(lines[i])
                 isTagClosed = True
         else:
-            #lines[i] = correct_img_atr(lines[i])
             # check for both, correct and incorrect html tags, because dymola except also <\html>
             idxC1 = lines[i].find("</html>")
             idxC2 = lines[i].find("<\html>")
@@ -162,20 +160,46 @@ def _CheckFile(moFile):
 
     # correct img attribute and closing tag
     document_corr_img =""
+    CloseFound=True
     for line in document_corr.splitlines():
-        line = correct_img_atr(line)
+        line, CloseFound = correct_img_atr(line,CloseFound)
         document_corr_img += line + '\n'
     return document_corr_img, errors_string
 
-def correct_img_atr(line):
+def correct_img_atr(line,CloseFound):
     #check for missing alt attributed
-    imgTag = line.encode("utf-8").find("img")
-    if imgTag> -1:
-        imgCloseTagIndex = line.find(">", imgTag)
-        imgAltIndex = line.find("alt", imgTag)
+    if CloseFound == True:
+        imgTag = line.encode("utf-8").find("img")
+        if imgTag> -1:
+            imgCloseTagIndex = line.find(">", imgTag)
+            imgAltIndex = line.find("alt", imgTag)
+            # if close tag exists but no alt attribute, insert alt attribute and change > to />
+            if imgCloseTagIndex > -1 and imgAltIndex == -1:
+                line = line[:imgTag] + line[imgTag:].replace(">", ' alt="" />',1)
+                CloseFound = True
+            # if close tag exists and alt attribute exists, only change > to />
+            elif imgCloseTagIndex > -1 and imgAltIndex > -1:
+                line = line[:imgTag] + line[imgTag:].replace(">", '/>', 1)
+                CloseFound = True
+            # if close tag is not in the same line
+            elif imgCloseTagIndex == -1:
+                line = line
+                CloseFound = False
+    else:
+        # if no close tag was found in previous line, but opening tag found search for close on this line with same
+        # procedure
+        imgCloseTagIndex = line.find(">")
+        imgAltIndex = line.find("alt")
         if imgCloseTagIndex > -1 and imgAltIndex == -1:
-            line = line[:imgTag] + line[imgTag:].replace(">", ' alt="" />',1)
-    return line
+            line = line[:imgCloseTagIndex] + line[imgCloseTagIndex:].replace(">", ' alt="" />',1)
+            CloseFound = True
+        elif imgCloseTagIndex > -1 and imgAltIndex > -1:
+            line = line[:imgCloseTagIndex] + line[imgCloseTagIndex:].replace(">", '/>', 1)
+            CloseFound = True
+        elif imgCloseTagIndex == -1:
+            CloseFound = False
+            line = line
+    return line, CloseFound
 
 def _htmlCorrection(htmlCode):
     from tidylib import tidy_document

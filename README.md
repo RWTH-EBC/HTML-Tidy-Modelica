@@ -4,7 +4,7 @@ This script converts HTML Code in Modelica to get a HTML and Dymola conform code
 ### How to use the script:
 
  1. Install tidylib for python with
-	- pip install pytidylib
+	- `pip install pytidylib`
 
 2. Install library
 	- Get binary from: http://binaries.html-tidy.org/
@@ -15,9 +15,9 @@ This script converts HTML Code in Modelica to get a HTML and Dymola conform code
 
 3. copy html_tidy.py into the modelica directory in which you want to correct your modelica files
 	
-	Important!: The html_tidy.py has to be in one directory with your package.mo file. All files in this directory and the directory below will be scanned and corrected
+	*Important: The html_tidy.py has to be in one directory with your package.mo file. All files in this directory and the directory below will be scanned and corrected*
 	
-4. use html_tidy.py --help for instructions
+4. use `html_tidy.py --help` for instructions
 
 
 ### License

@@ -179,7 +179,7 @@ def correct_img_atr(line,CloseFound):
                 CloseFound = True
             # if close tag exists and alt attribute exists, only change > to />
             elif imgCloseTagIndex > -1 and imgAltIndex > -1:
-                line = line[:imgTag] + line[imgTag:].replace(">", '/>', 1)
+                line = line[:imgTag] + line[imgTag:].replace(">", ' />', 1)
                 CloseFound = True
             # if close tag is not in the same line
             elif imgCloseTagIndex == -1:
@@ -194,7 +194,7 @@ def correct_img_atr(line,CloseFound):
             line = line[:imgCloseTagIndex] + line[imgCloseTagIndex:].replace(">", ' alt="" />',1)
             CloseFound = True
         elif imgCloseTagIndex > -1 and imgAltIndex > -1:
-            line = line[:imgCloseTagIndex] + line[imgCloseTagIndex:].replace(">", '/>', 1)
+            line = line[:imgCloseTagIndex] + line[imgCloseTagIndex:].replace(">", ' />', 1)
             CloseFound = True
         elif imgCloseTagIndex == -1:
             CloseFound = False

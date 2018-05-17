@@ -25,7 +25,7 @@ This script converts HTML Code in Modelica to get a HTML and Dymola conform code
 1. Install pytidylib with dll's as described above
 2. run from command line::
 	
-	`$ python viewHTMLerrors.py <file> [file [...]]`
+	`$ python view_html_errors.py <file> [file [...]]`
 
 The script will 
 

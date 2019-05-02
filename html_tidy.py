@@ -33,7 +33,7 @@ def run_files(rootDir, correct_overwrite, correct_backup, log):
     if log:
         _return_logfile(rootDir, errMsg)
         print("##########################################################")
-        print("you can find your logfile under " + rootDir + "\logfile.txt")
+        print(("you can find your logfile under " + rootDir + "\logfile.txt"))
 
 
 def _correct_overwrite(moFulNam, document_corr):
@@ -55,7 +55,7 @@ def _backup_old_files(rootDir, moFulNam, document_corr, file_counter):
     # todo: richtigen error einfuegen
     if os.path.exists(rootDir + "_backup") is False and file_counter == 1:
         shutil.copytree(rootDir, rootDir + "_backup")
-        print("you can find your backup under " + rootDir + "_backup")
+        print(("you can find your backup under " + rootDir + "_backup"))
     #todo unconde ##print(moFulNam)
     os.remove(moFulNam)
     newfile = open(moFulNam, "w")
@@ -220,7 +220,7 @@ def _htmlCorrection(htmlCode):
     }
 
     document_corr = htmlCorrect
-    for old, new in replacements.iteritems():
+    for old, new in list(replacements.items()):
         document_corr = document_corr.replace(old, new)
     return document_corr, errors
 

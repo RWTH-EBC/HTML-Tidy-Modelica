@@ -43,7 +43,7 @@ def _correct_overwrite(moFulNam, document_corr):
     """
     os.remove(moFulNam)
     #todo: uncode##print(moFulNam)
-    newfile = open(moFulNam, "w")
+    newfile = open(moFulNam, "wb")
     newfile.write(document_corr.encode("utf-8"))
 
 
@@ -169,7 +169,7 @@ def _CheckFile(moFile):
 def correct_img_atr(line,CloseFound):
     #check for missing alt attributed
     if CloseFound == True:
-        imgTag = line.encode("utf-8").find("img")
+        imgTag = line.encode("utf-8").find(b"img")
         if imgTag> -1:
             imgCloseTagIndex = line.find(">", imgTag)
             imgAltIndex = line.find("alt", imgTag)

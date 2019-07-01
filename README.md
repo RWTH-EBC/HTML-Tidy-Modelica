@@ -17,7 +17,7 @@ This script converts HTML Code in Modelica to get a HTML and Dymola conform code
 	
 	*Important: The html_tidy.py has to be in one directory with your package.mo file. All files in this directory and the directory below will be scanned and corrected*
 	
-4. use `html_tidy.py --help` for instructions
+4. use `python html_tidy.py --help` for instructions
 
 
 ### How to use the script **view_html_errors.py**:

@@ -33,7 +33,7 @@ def run_files(rootDir, correct_overwrite, correct_backup, log):
     if log:
         _return_logfile(rootDir, errMsg)
         print("##########################################################")
-        print("you can find your logfile under " + rootDir + "\logfile.txt")
+        print(("you can find your logfile under " + rootDir + "\logfile.txt"))
 
 
 def _correct_overwrite(moFulNam, document_corr):
@@ -43,7 +43,7 @@ def _correct_overwrite(moFulNam, document_corr):
     """
     os.remove(moFulNam)
     #todo: uncode##print(moFulNam)
-    newfile = open(moFulNam, "w")
+    newfile = open(moFulNam, "wb")
     newfile.write(document_corr.encode("utf-8"))
 
 
@@ -55,7 +55,7 @@ def _backup_old_files(rootDir, moFulNam, document_corr, file_counter):
     # todo: richtigen error einfuegen
     if os.path.exists(rootDir + "_backup") is False and file_counter == 1:
         shutil.copytree(rootDir, rootDir + "_backup")
-        print("you can find your backup under " + rootDir + "_backup")
+        print(("you can find your backup under " + rootDir + "_backup"))
     #todo unconde ##print(moFulNam)
     os.remove(moFulNam)
     newfile = open(moFulNam, "w")
@@ -169,7 +169,7 @@ def _CheckFile(moFile):
 def correct_img_atr(line,CloseFound):
     #check for missing alt attributed
     if CloseFound == True:
-        imgTag = line.encode("utf-8").find("img")
+        imgTag = line.encode("utf-8").find(b"img")
         if imgTag> -1:
             imgCloseTagIndex = line.find(">", imgTag)
             imgAltIndex = line.find("alt", imgTag)
@@ -220,7 +220,7 @@ def _htmlCorrection(htmlCode):
     }
 
     document_corr = htmlCorrect
-    for old, new in replacements.iteritems():
+    for old, new in list(replacements.items()):
         document_corr = document_corr.replace(old, new)
     return document_corr, errors
 

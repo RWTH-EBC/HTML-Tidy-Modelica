@@ -1,6 +1,8 @@
 # HTML-Tidy-Modelica
 This script converts HTML Code in Modelica to get a HTML and Dymola conform code.
 
+It is included in https://github.com/RWTH-EBC/ModelicaPyCI and archived.
+
 ### How to use the script **html-tidy.py**:
 
 1. Install tidylib for python with
